@@ -104,6 +104,15 @@ class UrunEkleGuncelleState extends State<UrunEkleGuncelle> {
     }
   }
 
+  void _alanlariTemizle() {
+    _barkodController.clear();
+    _urunAdiController.clear();
+    _stokController.clear();
+    _alisFiyatiController.clear();
+    _karOraniController.clear();
+    _satisFiyatiController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -222,7 +231,14 @@ class UrunEkleGuncelleState extends State<UrunEkleGuncelle> {
 
                     final urunProvider = Provider.of<UrunProvider>(context, listen: false);
                     urunProvider.urunEkle(yeniUrun);
-                    Navigator.pop(context);
+
+                    // Başarılı mesajı göster
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Ürün başarıyla eklendi!')),
+                    );
+
+                    // Alanları temizle
+                    _alanlariTemizle();
                   }
                 },
                 child: Text('Kaydet'),
