@@ -7,8 +7,10 @@ plugins {
 
 android {
     namespace = "com.example.perakende_satis"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    compileSdk = flutter.compileSdkVersion.toInt() // compileSdkVersion bir String olduğu için .toInt() ekledik
+
+    // NDK sürümünü manuel olarak belirtin
+    ndkVersion = "27.0.12077973" // Bu satırı ekleyin
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -24,9 +26,9 @@ android {
         applicationId = "com.example.perakende_satis"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
+        minSdk = flutter.minSdkVersion.toInt() // minSdkVersion bir String olduğu için .toInt() ekledik
+        targetSdk = flutter.targetSdkVersion.toInt() // targetSdkVersion bir String olduğu için .toInt() ekledik
+        versionCode = flutter.versionCode.toInt() // versionCode bir String olduğu için .toInt() ekledik
         versionName = flutter.versionName
     }
 
