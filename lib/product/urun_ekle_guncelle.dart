@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/urun_model.dart';
 import '../providers/urun_provider.dart';
+import '../models/urun_model.dart';
 import 'package:barcode_scan2/barcode_scan2.dart';
 
 class UrunEkleGuncelle extends StatefulWidget {
@@ -19,6 +19,12 @@ class UrunEkleGuncelleState extends State<UrunEkleGuncelle> {
   final _alisFiyatiController = TextEditingController();
   final _karOraniController = TextEditingController();
   final _satisFiyatiController = TextEditingController();
+  final _kritikStokController = TextEditingController(); // Yeni alan
+  final _anaKategoriController = TextEditingController(); // Yeni alan
+  final _altKategoriController = TextEditingController(); // Yeni alan
+  final _tedarikciController = TextEditingController(); // Yeni alan
+  final _tedarikTarihiController = TextEditingController(); // Yeni alan
+  final _notlarController = TextEditingController(); // Yeni alan
 
   @override
   void didChangeDependencies() {
@@ -32,6 +38,12 @@ class UrunEkleGuncelleState extends State<UrunEkleGuncelle> {
       _alisFiyatiController.text = urun.alisFiyati.toString();
       _karOraniController.text = urun.karOrani.toString();
       _satisFiyatiController.text = urun.satisFiyati.toString();
+      _kritikStokController.text = urun.kritikStok.toString(); // Yeni alan
+      _anaKategoriController.text = urun.anaKategori; // Yeni alan
+      _altKategoriController.text = urun.altKategori; // Yeni alan
+      _tedarikciController.text = urun.tedarikci; // Yeni alan
+      _tedarikTarihiController.text = urun.tedarikTarihi; // Yeni alan
+      _notlarController.text = urun.notlar; // Yeni alan
     }
   }
 
@@ -60,6 +72,12 @@ class UrunEkleGuncelleState extends State<UrunEkleGuncelle> {
         alisFiyati: 0,
         karOrani: 0,
         satisFiyati: 0,
+        kritikStok: 0,
+        anaKategori: '',
+        altKategori: '',
+        tedarikci: '',
+        tedarikTarihi: '',
+        notlar: '',
       ),
     );
 
@@ -71,6 +89,12 @@ class UrunEkleGuncelleState extends State<UrunEkleGuncelle> {
         _alisFiyatiController.text = urun.alisFiyati.toString();
         _karOraniController.text = urun.karOrani.toString();
         _satisFiyatiController.text = urun.satisFiyati.toString();
+        _kritikStokController.text = urun.kritikStok.toString();
+        _anaKategoriController.text = urun.anaKategori;
+        _altKategoriController.text = urun.altKategori;
+        _tedarikciController.text = urun.tedarikci;
+        _tedarikTarihiController.text = urun.tedarikTarihi;
+        _notlarController.text = urun.notlar;
       });
     } else {
       // Ürün bulunamadıysa alanları temizle
@@ -80,6 +104,12 @@ class UrunEkleGuncelleState extends State<UrunEkleGuncelle> {
         _alisFiyatiController.clear();
         _karOraniController.clear();
         _satisFiyatiController.clear();
+        _kritikStokController.clear();
+        _anaKategoriController.clear();
+        _altKategoriController.clear();
+        _tedarikciController.clear();
+        _tedarikTarihiController.clear();
+        _notlarController.clear();
       });
     }
   }
@@ -111,6 +141,12 @@ class UrunEkleGuncelleState extends State<UrunEkleGuncelle> {
     _alisFiyatiController.clear();
     _karOraniController.clear();
     _satisFiyatiController.clear();
+    _kritikStokController.clear();
+    _anaKategoriController.clear();
+    _altKategoriController.clear();
+    _tedarikciController.clear();
+    _tedarikTarihiController.clear();
+    _notlarController.clear();
   }
 
   @override
@@ -167,6 +203,20 @@ class UrunEkleGuncelleState extends State<UrunEkleGuncelle> {
               ),
               SizedBox(height: 16),
               TextFormField(
+                controller: _kritikStokController,
+                decoration: InputDecoration(
+                  labelText: 'Kritik Stok',
+                ),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Kritik stok boş olamaz';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16),
+              TextFormField(
                 controller: _alisFiyatiController,
                 decoration: InputDecoration(
                   labelText: 'Alış Fiyatı',
@@ -216,6 +266,66 @@ class UrunEkleGuncelleState extends State<UrunEkleGuncelle> {
                   return null;
                 },
               ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _anaKategoriController,
+                decoration: InputDecoration(
+                  labelText: 'Ana Kategori',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Ana kategori boş olamaz';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _altKategoriController,
+                decoration: InputDecoration(
+                  labelText: 'Alt Kategori',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Alt kategori boş olamaz';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _tedarikciController,
+                decoration: InputDecoration(
+                  labelText: 'Tedarikçi',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Tedarikçi boş olamaz';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _tedarikTarihiController,
+                decoration: InputDecoration(
+                  labelText: 'Tedarik Tarihi (gg.aa.yyyy)',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Tedarik tarihi boş olamaz';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _notlarController,
+                decoration: InputDecoration(
+                  labelText: 'Notlar',
+                ),
+                maxLines: 3,
+              ),
               SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () {
@@ -227,6 +337,12 @@ class UrunEkleGuncelleState extends State<UrunEkleGuncelle> {
                       alisFiyati: double.parse(_alisFiyatiController.text),
                       karOrani: double.parse(_karOraniController.text),
                       satisFiyati: double.parse(_satisFiyatiController.text),
+                      kritikStok: int.parse(_kritikStokController.text),
+                      anaKategori: _anaKategoriController.text,
+                      altKategori: _altKategoriController.text,
+                      tedarikci: _tedarikciController.text,
+                      tedarikTarihi: _tedarikTarihiController.text,
+                      notlar: _notlarController.text,
                     );
 
                     final urunProvider = Provider.of<UrunProvider>(context, listen: false);
@@ -258,6 +374,12 @@ class UrunEkleGuncelleState extends State<UrunEkleGuncelle> {
     _alisFiyatiController.dispose();
     _karOraniController.dispose();
     _satisFiyatiController.dispose();
+    _kritikStokController.dispose();
+    _anaKategoriController.dispose();
+    _altKategoriController.dispose();
+    _tedarikciController.dispose();
+    _tedarikTarihiController.dispose();
+    _notlarController.dispose();
     super.dispose();
   }
 }
