@@ -184,8 +184,8 @@ class _UrunlerState extends State<Urunler> {
             Urun yeniUrun = Urun(
               barkod: row[0]!.value.toString(),
               urunAdi: row[1]?.value.toString() ?? '',
-              stok: int.tryParse(row[2]?.value.toString() ?? '0') ?? 0,
-              kritikStok: int.tryParse(row[3]?.value.toString() ?? '0') ?? 0,
+              stok: double.tryParse(row[2]?.value.toString() ?? '0') ?? 0,
+              kritikStok: double.tryParse(row[3]?.value.toString() ?? '0') ?? 0,
               alisFiyati: double.tryParse(row[4]?.value.toString() ?? '0') ?? 0,
               karOrani: double.tryParse(row[5]?.value.toString() ?? '0') ?? 0,
               satisFiyati: double.tryParse(row[6]?.value.toString() ?? '0') ?? 0,

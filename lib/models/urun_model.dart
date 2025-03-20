@@ -1,11 +1,11 @@
 class Urun {
   final String barkod;
-  final String urunAdi;
-  int stok; // final olmaktan çıkarıldı
+  String urunAdi;
+  double stok;
   final double alisFiyati;
   final double karOrani;
-  final double satisFiyati;
-  final int kritikStok;
+  double satisFiyati;
+  final double kritikStok;
   final String anaKategori;
   final String altKategori;
   final String tedarikci;
@@ -27,17 +27,18 @@ class Urun {
     required this.notlar,
   });
 
-  // copyWith metodu ekleniyor
   Urun copyWith({
-    int? stok,
+    String? urunAdi,
+    double? stok,
+    double? satisFiyati,
   }) {
     return Urun(
       barkod: barkod,
-      urunAdi: urunAdi,
+      urunAdi: urunAdi ?? this.urunAdi,
       stok: stok ?? this.stok,
       alisFiyati: alisFiyati,
       karOrani: karOrani,
-      satisFiyati: satisFiyati,
+      satisFiyati: satisFiyati ?? this.satisFiyati,
       kritikStok: kritikStok,
       anaKategori: anaKategori,
       altKategori: altKategori,

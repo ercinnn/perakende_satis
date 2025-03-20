@@ -333,11 +333,11 @@ class UrunEkleGuncelleState extends State<UrunEkleGuncelle> {
                     Urun yeniUrun = Urun(
                       barkod: _barkodController.text,
                       urunAdi: _urunAdiController.text,
-                      stok: int.parse(_stokController.text),
+                      stok: double.parse(_stokController.text),
                       alisFiyati: double.parse(_alisFiyatiController.text),
                       karOrani: double.parse(_karOraniController.text),
                       satisFiyati: double.parse(_satisFiyatiController.text),
-                      kritikStok: int.parse(_kritikStokController.text),
+                      kritikStok: double.parse(_kritikStokController.text),
                       anaKategori: _anaKategoriController.text,
                       altKategori: _altKategoriController.text,
                       tedarikci: _tedarikciController.text,
