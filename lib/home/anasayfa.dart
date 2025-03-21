@@ -78,7 +78,7 @@ class AnaSayfa extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => Urunler()),
                 );
               },
-              child: Text('Ürünler Sayfasına Git'),
+              child: Text('Ürünler'),
             ),
             SizedBox(height: 20),
             ElevatedButton(
@@ -88,7 +88,7 @@ class AnaSayfa extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => UrunEkleGuncelle()),
                 );
               },
-              child: Text('Ürün Ekle/Güncelle Sayfasına Git'),
+              child: Text('Ürün Ekle/Güncelle'),
             ),
             SizedBox(height: 20),
             // Satış Sayfası Butonu
@@ -99,7 +99,7 @@ class AnaSayfa extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => SalesScreen()),
                 );
               },
-              child: Text('Satış Sayfasına Git'),
+              child: Text('Satış'),
             ),
           ],
         ),
