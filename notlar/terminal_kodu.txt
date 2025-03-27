@@ -1,4 +1,0 @@
-cd C:\path\to\your\flutter_project
-
-alttaki kodu yapıştır
-Get-ChildItem -Path lib -Filter *.dart -Recurse | Get-Content | Out-File kodlar.txt

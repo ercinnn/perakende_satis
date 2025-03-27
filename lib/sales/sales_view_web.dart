@@ -514,7 +514,7 @@ class _SalesViewWebState extends State<SalesViewWeb> {
                         style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Colors.blue)),
+                            color: Color.fromARGB(255, 7, 57, 101))),
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -541,7 +541,7 @@ class _SalesViewWebState extends State<SalesViewWeb> {
                                     style: const TextStyle(fontSize: 14)),
                                 trailing: IconButton(
                                   icon: const Icon(Icons.add_box,
-                                      color: Colors.green,
+                                      color: Color.fromARGB(255, 0, 161, 5),
                                       size: 32),
                                   onPressed: () => _urunEkle(urun),
                                 ),
@@ -695,10 +695,10 @@ class _SalesViewWebState extends State<SalesViewWeb> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          _buildOdemeButonu('Nakit', const Color(0xFF4CAF50)),
-                          _buildOdemeButonu('Pos', const Color(0xFF2196F3)),
-                          _buildOdemeButonu('Açık Hesap', const Color(0xFFFF9800)),
-                          _buildOdemeButonu('Parçalı Ödeme', const Color(0xFF9C27B0)),
+                          _buildOdemeButonu('Nakit', const Color.fromARGB(255, 7, 232, 14)),
+                          _buildOdemeButonu('Pos', const Color.fromARGB(255, 2, 109, 197)),
+                          _buildOdemeButonu('Açık Hesap', const Color.fromARGB(255, 255, 154, 1)),
+                          _buildOdemeButonu('Parçalı Ödeme', const Color.fromARGB(255, 169, 2, 198)),
                         ],
                       ),
                     ),
@@ -709,7 +709,7 @@ class _SalesViewWebState extends State<SalesViewWeb> {
                             fontSize: 16,
                             fontWeight: FontWeight.bold)),
                     activeColor: Colors.red,
-                    inactiveThumbColor: Colors.green,
+                    inactiveThumbColor: const Color.fromARGB(255, 0, 97, 3),
                     value: _iadeModu,
                     onChanged: (value) => setState(() => _iadeModu = value),
                   ),

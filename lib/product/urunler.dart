@@ -1,3 +1,4 @@
+//urunler.dart
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -55,6 +56,7 @@ class _UrunlerState extends State<Urunler> {
                 Text('Barkod: ${urun.barkod}'),
                 Text('Stok: ${urun.stok}'),
                 Text('Kritik Stok: ${urun.kritikStok}'),
+                Text('Birim: ${urun.birim}'),
                 Text('Ana Kategori: ${urun.anaKategori}'),
                 Text('Alt Kategori: ${urun.altKategori}'),
                 Text('Tedarikçi: ${urun.tedarikci}'),
@@ -80,6 +82,7 @@ class _UrunlerState extends State<Urunler> {
       'Ürün Adı',
       'Stok',
       'Kritik Stok',
+      'Birim',
       'Alış Fiyatı',
       'Kar Oranı',
       'Satış Fiyatı',
@@ -97,6 +100,7 @@ class _UrunlerState extends State<Urunler> {
         urun.urunAdi,
         urun.stok.toString(),
         urun.kritikStok.toString(),
+        urun.birim,
         urun.alisFiyati.toString(),
         urun.karOrani.toString(),
         urun.satisFiyati.toString(),
@@ -116,7 +120,7 @@ class _UrunlerState extends State<Urunler> {
         // Webde dosya indirme işlemi
         final blob = html.Blob([excelBytes], 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         final url = html.Url.createObjectUrlFromBlob(blob);
-        html.AnchorElement(href: url) // anchor değişkeni kaldırıldı
+        html.AnchorElement(href: url)
           ..setAttribute('download', 'urunler.xlsx')
           ..click();
         html.Url.revokeObjectUrl(url);
@@ -186,14 +190,15 @@ class _UrunlerState extends State<Urunler> {
               urunAdi: row[1]?.value.toString() ?? '',
               stok: double.tryParse(row[2]?.value.toString() ?? '0') ?? 0,
               kritikStok: double.tryParse(row[3]?.value.toString() ?? '0') ?? 0,
-              alisFiyati: double.tryParse(row[4]?.value.toString() ?? '0') ?? 0,
-              karOrani: double.tryParse(row[5]?.value.toString() ?? '0') ?? 0,
-              satisFiyati: double.tryParse(row[6]?.value.toString() ?? '0') ?? 0,
-              anaKategori: row[7]?.value.toString() ?? '',
-              altKategori: row[8]?.value.toString() ?? '',
-              tedarikci: row[9]?.value.toString() ?? '',
-              tedarikTarihi: row[10]?.value.toString() ?? '',
-              notlar: row[11]?.value.toString() ?? '',
+              birim: row[4]?.value.toString() ?? 'Adet', // Default olarak 'Adet' ayarla
+              alisFiyati: double.tryParse(row[5]?.value.toString() ?? '0') ?? 0,
+              karOrani: double.tryParse(row[6]?.value.toString() ?? '0') ?? 0,
+              satisFiyati: double.tryParse(row[7]?.value.toString() ?? '0') ?? 0,
+              anaKategori: row[8]?.value.toString() ?? '',
+              altKategori: row[9]?.value.toString() ?? '',
+              tedarikci: row[10]?.value.toString() ?? '',
+              tedarikTarihi: row[11]?.value.toString() ?? '',
+              notlar: row[12]?.value.toString() ?? '',
             );
             eklenecekUrunler.add(yeniUrun);
           }

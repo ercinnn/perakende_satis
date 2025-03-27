@@ -44,7 +44,22 @@ class UrunProvider with ChangeNotifier {
     }
   }
 
+
+  // Ürün fiyatını güncelleme
+  void urunFiyatGuncelle(String barkod, double yeniFiyat) {
+    final urunIndex = _urunler.indexWhere((urun) => urun.barkod == barkod);
+    if (urunIndex != -1) {
+      _urunler[urunIndex] = _urunler[urunIndex].copyWith(satisFiyati: yeniFiyat);
+      notifyListeners(); // Değişiklikleri dinleyicilere bildir
+    }
+  }
+
+
+
+
   List<Urun> stokDurumunaGoreFiltrele(int minStok) {
     return _urunler.where((urun) => urun.stok >= minStok).toList();
   }
+
+  urunleriGetir() {}
 }
