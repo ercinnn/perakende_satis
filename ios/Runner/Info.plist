@@ -2,7 +2,9 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSCameraUsageDescription</key>
+	<key>NSAppTransportSecurity</key>
+  	<key>NSAllowsArbitraryLoads</key>
+  	<key>NSCameraUsageDescription</key>
 	<string>Barkod taramak için kameraya erişim gerekiyor.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>

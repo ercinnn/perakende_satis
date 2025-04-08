@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'urun_ekle_guncelle_mobile.dart';
-import 'urun_ekle_guncelle_web.dart';
+import 'product_add_update_mobile.dart';
+import 'product_add_update_web.dart';
 
 class UrunEkleGuncelleScreen extends StatelessWidget {
   const UrunEkleGuncelleScreen({super.key});
@@ -14,9 +14,9 @@ class UrunEkleGuncelleScreen extends StatelessWidget {
       body: LayoutBuilder(
         builder: (context, constraints) {
           if (constraints.maxWidth < 600) {
-            return const UrunEkleGuncelleMobile(); // Mobil tasarım
+            return const UrunEkleGuncelleMobile();
           } else {
-            return const UrunEkleGuncelleWeb(); // Web tasarım
+            return const UrunEkleGuncelleWeb();
           }
         },
       ),

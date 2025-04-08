@@ -1,73 +1,77 @@
-import 'package:supabase/supabase.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class AuthException implements Exception {
+class AuthServiceException implements Exception {
   final String message;
-  AuthException(this.message);
+  AuthServiceException(this.message);
+
+  @override
+  String toString() => message;
 }
 
 class AuthService {
-  final SupabaseClient supabase;
+  final SupabaseClient _supabase;
 
-  AuthService(this.supabase);
+  AuthService() : _supabase = Supabase.instance.client;
 
-  Future<Map<String, dynamic>> adminGiris(String email, String sifre) async {
+  Future<Map<String, dynamic>> registerAdmin({
+    required String email,
+    required String password,
+  }) async {
     try {
-      // 1. Email ile admin kontrolü
-      final adminResponse = await supabase
-          .from('adminler')
-          .select('id, firma_id')
-          .eq('email', email)
-          .single();
-
-      // 2. Şifre doğrulama
-      final authResponse = await supabase.auth.signInWithPassword(
-        email: email,
-        password: sifre,
+      final authResponse = await _supabase.auth.signUp(
+        email: email.trim(),
+        password: password.trim(),
       );
 
       if (authResponse.user == null) {
-        throw AuthException('Geçersiz şifre');
+        throw AuthServiceException('Auth kaydı başarısız');
       }
 
       return {
-        'firma_id': adminResponse.data['firma_id'],
-        'user_id': adminResponse.data['id'],
+        'user_id': authResponse.user!.id,
+        'email': email,
       };
     } on PostgrestException catch (e) {
-      throw AuthException('Admin bulunamadı');
+      throw AuthServiceException('Veritabanı hatası: ${e.message} (Kod: ${e.code})');
     } catch (e) {
-      throw AuthException('Giriş başarısız');
+      throw AuthServiceException('Kayıt sırasında hata: ${e.toString()}');
     }
   }
 
-  Future<Map<String, dynamic>> personelGiris(
-    String email, 
-    String personelKodu, 
-    String sifre,
-  ) async {
+  Future<Map<String, dynamic>> adminGiris({
+    required String email,
+    required String password,
+  }) async {
     try {
-      // 1. Email ile firma bul
-      final firmaResponse = await supabase
-          .from('adminler')
-          .select('firma_id')
-          .eq('email', email)
-          .single();
+      final response = await _supabase.auth.signInWithPassword(
+        email: email.trim(),
+        password: password.trim(),
+      );
 
-      // 2. Personel giriş kontrolü
-      final personelResponse = await supabase.rpc('personel_giris_kontrol', params: {
-        'p_firma_id': firmaResponse.data['firma_id'],
-        'p_personel_kodu': personelKodu,
-        'p_sifre': sifre,
-      });
+      if (response.user == null) {
+        throw AuthServiceException('Kullanıcı bulunamadı');
+      }
 
       return {
-        'firma_id': firmaResponse.data['firma_id'],
-        'user_id': personelResponse.data['personel_id'],
+        'user_id': response.user!.id,
+        'email': response.user!.email,
+        'access_token': response.session?.accessToken,
       };
     } on PostgrestException catch (e) {
-      throw AuthException(e.message);
+      if (e.code == 'PGRST116') {
+        throw AuthServiceException('Veritabanı hatası: Kullanıcı kaydı tutarsız');
+      }
+      throw AuthServiceException('Veritabanı hatası: ${e.message}');
     } catch (e) {
-      throw AuthException('Personel girişi başarısız');
+      throw AuthServiceException('Giriş başarısız: ${e.toString()}');
+    }
+  }
+
+  Future<void> cikisYap() async {
+    try {
+      await _supabase.auth.signOut();
+    } catch (e) {
+      throw AuthServiceException('Çıkış yapılırken hata oluştu: $e');
     }
   }
 }

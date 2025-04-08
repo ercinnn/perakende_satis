@@ -13,10 +13,10 @@ class KategoriEslesmeService {
       .from('kategori_eslesmeleri')
       .select()
       .eq('firma_id', firmaId)
-      .in_('anahtar_kelime', anahtarKelimeler)
+      .or(anahtarKelimeler.map((e) => 'anahtar_kelime.cs.{$e}').join(','))
       .order('kullanilma_sayisi', ascending: false);
     
-    return response.data ?? [];
+    return response;
   }
 
   Future<void> kategoriSeciminiKaydet({
@@ -24,7 +24,6 @@ class KategoriEslesmeService {
     required String anaKategori,
     required String altKategori,
   }) async {
-    // Var olan kaydı güncelle veya yeni oluştur
     await supabase.rpc('kategori_eslesmesi_kaydet', params: {
       'p_firma_id': firmaId,
       'p_anahtar_kelime': anahtarKelime,

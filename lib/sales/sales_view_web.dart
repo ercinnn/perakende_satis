@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/urun_provider.dart';
-import '../models/urun_model.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../providers/product_provider.dart';
+import '../models/product_model.dart';
 
 class SalesViewWeb extends StatefulWidget {
   const SalesViewWeb({super.key});
@@ -24,6 +25,7 @@ class _SalesViewWebState extends State<SalesViewWeb> {
   bool _iadeModu = false;
   bool _aramaModu = false;
   int _muhtelifCounter = 1;
+  final SupabaseClient _supabase = Supabase.instance.client;
 
   void _miktarGuncelle(int index, double yeniMiktar) {
     final urun = _sepet[index];
@@ -36,7 +38,8 @@ class _SalesViewWebState extends State<SalesViewWeb> {
       _toplamTutarHesapla();
     });
 
-    context.read<UrunProvider>().urunGuncelle(urun.copyWith(stok: yeniMiktar));
+    Provider.of<UrunProvider>(context, listen: false)
+        .urunGuncelle(urun.copyWith(stok: yeniMiktar));
   }
 
   void _temizleVeKapat() {
@@ -96,7 +99,7 @@ class _SalesViewWebState extends State<SalesViewWeb> {
     );
   }
 
-  void _urunEkle(Urun urun) {
+  Future<void> _urunEkle(Urun urun) async {
     final index = _sepet.indexWhere((u) => u.barkod == urun.barkod);
     if (index != -1) {
       _miktarGuncelle(index, _sepet[index].stok + 1);
@@ -107,24 +110,27 @@ class _SalesViewWebState extends State<SalesViewWeb> {
     _toplamTutarHesapla();
   }
 
-  void _barkodIleUrunEkle(String barkod) {
-    final urun = context.read<UrunProvider>().barkodlaUrunBul(barkod);
+  Future<void> _barkodIleUrunEkle(String barkod) async {
+    final urun = await Provider.of<UrunProvider>(context, listen: false)
+        .barkodlaUrunBul(barkod);
     if (urun != null) {
-      _urunEkle(urun);
+      await _urunEkle(urun);
     } else {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Ürün Bulunamadı'),
-          content: Text('$barkod barkodlu ürün kayıtlı değil'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Tamam'),
-            ),
-          ],
-        ),
-      );
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Ürün Bulunamadı'),
+            content: Text('$barkod barkodlu ürün kayıtlı değil'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Tamam'),
+              ),
+            ],
+          ),
+        );
+      }
     }
   }
 
@@ -134,6 +140,19 @@ class _SalesViewWebState extends State<SalesViewWeb> {
       final urunAdi = _muhtelifUrunController.text.isEmpty
           ? 'Muhtelif Ürün - ${tutar.toStringAsFixed(2)}₺'
           : _muhtelifUrunController.text;
+
+      final firmaId = _supabase.auth.currentUser?.id;
+      final userEmail = _supabase.auth.currentUser?.email;
+      final firmaAdi = 'Firma Adı'; // Gerçek firma adını buraya ekleyin
+
+      if (firmaId == null || userEmail == null) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Kullanıcı girişi yapılmamış')),
+          );
+        }
+        return;
+      }
 
       final yeniUrun = Urun(
         barkod: 'MUHTELIF-${_muhtelifCounter++}',
@@ -148,6 +167,9 @@ class _SalesViewWebState extends State<SalesViewWeb> {
         tedarikci: '-',
         tedarikTarihi: DateTime.now().toString(),
         notlar: 'Elle eklenen ürün',
+        firmaId: firmaId,
+        firmaAdi: firmaAdi,
+        userEmail: userEmail,
       );
       _urunEkle(yeniUrun);
       _muhtelifUrunController.clear();
@@ -337,7 +359,7 @@ class _SalesViewWebState extends State<SalesViewWeb> {
                                   child: TextField(
                                     controller: _muhtelifUrunController,
                                     decoration: const InputDecoration(
-                                      labelText: 'Muhtelif Ürün',
+                                      labelText: 'Muhtelif ürün',
                                       border: OutlineInputBorder(),
                                       contentPadding: EdgeInsets.symmetric(
                                           horizontal: 20)),
@@ -449,7 +471,7 @@ class _SalesViewWebState extends State<SalesViewWeb> {
                                     IconButton(
                                       icon: const Icon(Icons.remove_circle,
                                           color: Colors.red,
-                                          size: 28),
+                                      size: 28),
                                       onPressed: () => _miktarGuncelle(index, urun.stok - 1.0),
                                     ),
                                     SizedBox(

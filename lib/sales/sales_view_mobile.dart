@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:barcode_scan2/barcode_scan2.dart';
-import '../../providers/urun_provider.dart';
-import '../../models/urun_model.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../providers/product_provider.dart';
+import '../models/product_model.dart';
 
 class SalesViewMobile extends StatefulWidget {
   const SalesViewMobile({super.key});
@@ -25,8 +26,8 @@ class _SalesViewMobileState extends State<SalesViewMobile> {
   bool _iadeModu = false;
   final Map<String, bool> _fiyatGuncelleDurumu = {};
   int _muhtelifCounter = 1;
+  final SupabaseClient _supabase = Supabase.instance.client;
 
-  // Sepetteki farklı barkod sayısını hesapla
   int get _farkliBarkodSayisi {
     final barkodlar = _sepet.map((urun) => urun.barkod).toSet();
     return barkodlar.length;
@@ -162,8 +163,8 @@ class _SalesViewMobileState extends State<SalesViewMobile> {
     }
   }
 
-  void _urunEkle(String barkod) {
-    final urun = context.read<UrunProvider>().barkodlaUrunBul(barkod);
+  Future<void> _urunEkle(String barkod) async {
+    final urun = await context.read<UrunProvider>().barkodlaUrunBul(barkod);
     if (urun != null) {
       final index = _sepet.indexWhere((u) => u.barkod == barkod);
       setState(() {
@@ -175,14 +176,18 @@ class _SalesViewMobileState extends State<SalesViewMobile> {
         _toplamTutarHesapla();
       });
     } else {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Ürün Bulunamadı', style: TextStyle(fontSize: 16)),
-          content: Text('$barkod barkodlu ürün kayıtlı değil', style: Theme.of(context).textTheme.bodyMedium),
-          actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('Tamam', style: TextStyle(fontSize: 14)))],
-        ),
-      );
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Ürün Bulunamadı', style: TextStyle(fontSize: 16)),
+            content: Text('$barkod barkodlu ürün kayıtlı değil', 
+                         style: Theme.of(context).textTheme.bodyMedium),
+            actions: [TextButton(onPressed: () => Navigator.pop(context), 
+                               child: const Text('Tamam', style: TextStyle(fontSize: 14)))],
+          ),
+        );
+      }
     }
     _barkodController.clear();
   }
@@ -211,7 +216,7 @@ class _SalesViewMobileState extends State<SalesViewMobile> {
               '${urun.stok.toStringAsFixed(2)}x',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
-            Icon(
+            const Icon(
               Icons.edit,
               color: Colors.blue,
               size: 20,
@@ -416,9 +421,24 @@ class _SalesViewMobileState extends State<SalesViewMobile> {
             onPressed: () {
               final tutar = double.tryParse(_muhtelifTutarController.text) ?? 0.0;
               if (tutar > 0) {
+                final firmaId = _supabase.auth.currentUser?.id;
+                final userEmail = _supabase.auth.currentUser?.email;
+                final firmaAdi = 'Firma Adı';
+
+                if (firmaId == null || userEmail == null) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Kullanıcı girişi yapılmamış')),
+                    );
+                  }
+                  return;
+                }
+
                 final yeniUrun = Urun(
                   barkod: 'MUHTELIF-${_muhtelifCounter++}',
-                  urunAdi: _muhtelifAdController.text,
+                  urunAdi: _muhtelifAdController.text.isEmpty 
+                      ? 'Muhtelif Ürün - ${tutar.toStringAsFixed(2)}₺' 
+                      : _muhtelifAdController.text,
                   stok: 1,
                   alisFiyati: 0,
                   karOrani: 0,
@@ -429,6 +449,9 @@ class _SalesViewMobileState extends State<SalesViewMobile> {
                   tedarikci: '-',
                   tedarikTarihi: DateTime.now().toString(),
                   notlar: 'Elle eklenen ürün',
+                  firmaId: firmaId,
+                  firmaAdi: firmaAdi,
+                  userEmail: userEmail,
                 );
                 setState(() {
                   _sepet.add(yeniUrun);

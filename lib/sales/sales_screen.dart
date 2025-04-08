@@ -9,15 +9,13 @@ class SalesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Perakende Satış'),
+        title: const Text('Satış Ekranı'),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          if (constraints.maxWidth < 600) {
-            return SalesViewMobile(); // Mobil tasarım
-          } else {
-            return SalesViewWeb(); // Web tasarım
-          }
+          return constraints.maxWidth < 600
+              ? const SalesViewMobile()
+              : const SalesViewWeb();
         },
       ),
     );
